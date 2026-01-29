@@ -1,0 +1,14 @@
+{
+  "name": "monorepo",
+  "private": true,
+  "version": "1.0.0",
+  "description": "",
+  "scripts": {
+    "dev": "pnpm -r dev",
+    "build": "pnpm -r build",
+    "start": "pnpm -r start"
+  },
+  "keywords": [],
+  "author": "Max Shtefec",
+  "license": "ISC"
+}

@@ -1,0 +1,62 @@
+{
+  "Public": {
+    "Header": {
+      "home": "Brand",
+      "features": "Login",
+      "pricing": "Register",
+      "contact": "Contact",
+      "jobs": "Jobs",
+      "job-alerts": "Job Alerts",
+      "signin": "Login",
+      "signup": "Sign Up"
+    },
+    "Hero": {
+      "title": "Ship beautiful UI faster",
+      "subtitle": "A minimal landing built with Tailwind CSS + daisyUI. Reusable components, responsive styles, and accessible markup so you can focus on product.",
+      "linkDocs": "Documentation",
+      "linkDemo": "Live demo"
+    },
+    "CardHero": {
+      "title": "Start free — no credit card",
+      "subtitle": "Sign up and deploy a project in minutes with starter templates and components.",
+      "linkSignUp": "Sign Up"
+    },
+    "Features": {
+      "title1": "Fast",
+      "subtitle1": "Optimized components and utility-first styling for speedy builds.",
+      "title2": "Customizable",
+      "subtitle2": "EEasily theme and extend components to match your brand.",
+      "title3": "Accessible",
+      "subtitle3": "Semantic markup and sensible defaults to ship inclusive experiences."
+    },
+    "CTA": {
+      "title": "Ready to get started?",
+      "subtitle": "Create an account and launch your first project today.",
+      "link1": "Create account",
+      "link2": "View pricing"
+    },
+    "Footer": {
+      "brand": "Brand",
+      "text": "All rights reserved."
+    }
+  },
+  "Platform": {
+    "Sidebar": {
+      "common": "Common",
+      "dashboard": "Dashboard",
+      "content": "Content",
+      "pages": "Pages",
+      "integrations": "Integrations",
+      "jobs": "Jobs",
+      "job-applications": "Job Applications",
+      "job-subscriptions": "Job Subscriptions",
+      "themes": "Themes",
+      "scheme": "Scheme",
+      "users": "Users",
+      "configuration": "configuration",
+      "myAccount": "My Account",
+      "session": "Session",
+      "logout": "Logout"
+    }
+  }
+}

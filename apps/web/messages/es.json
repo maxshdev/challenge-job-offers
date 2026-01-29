@@ -1,0 +1,62 @@
+{
+  "Public": {
+    "Header": {
+      "home": "Marca",
+      "features": "Características",
+      "pricing": "Precios",
+      "contact": "Contacto",
+      "jobs": "Ofertas de Empleo",
+      "job-alerts": "Alertas de Empleo",
+      "signin": "Login",
+      "signup": "Regístrate"
+    },
+    "Hero": {
+      "title": "Crea interfaces hermosas más rápido",
+      "subtitle": "Una landing minimal construida con Tailwind CSS + daisyUI. Componentes reutilizables, estilos responsivos y marcado accesible para que puedas centrarte en el producto.",
+      "linkDocs": "Documentación",
+      "linkDemo": "Demo en vivo"
+    },
+    "CardHero": {
+      "title": "Comienza gratis — no se necesita tarjeta de crédito",
+      "subtitle": "Regístrate y despliega un proyecto en minutos con plantillas y componentes iniciales.",
+      "linkSignUp": "Regístrate"
+    },
+    "Features": {
+      "title1": "Rápido",
+      "subtitle1": "Componentes optimizados y estilos utility-first para construir más rápido.",
+      "title2": "Personalizable",
+      "subtitle2": "Personaliza y amplía fácilmente los componentes para adaptarlos a tu marca.",
+      "title3": "Accesible",
+      "subtitle3": "Marcado semántico y valores predeterminados sensatos para ofrecer experiencias inclusivas."
+    },
+    "CTA": {
+      "title": "¿Listo para comenzar?",
+      "subtitle": "Crea una cuenta y lanza tu primer proyecto hoy.",
+      "link1": "Crear cuenta",
+      "link2": "Ver precios"
+    },
+    "Footer": {
+      "brand": "Marca",
+      "text": "Todos los derechos reservados."
+    }
+  },
+  "Platform": {
+    "Sidebar": {
+      "common": "General",
+      "dashboard": "Dashboard",
+      "content": "Contenido",
+      "pages": "Páginas",
+      "integrations": "Integraciones",
+      "jobs": "Ofertas de Empleo",
+      "job-applications": "Aplicaciones de Empleo",
+      "job-subscriptions": "Suscripciones de Empleo",
+      "themes": "Temas",
+      "scheme": "Esquema",
+      "users": "Usuarios",
+      "configuration": "Configuración",
+      "myAccount": "Mi cuenta",
+      "session": "Sesión",
+      "logout": "Cerrar sesión"
+    }
+  }
+}
