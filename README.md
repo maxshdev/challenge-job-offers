@@ -1,84 +1,89 @@
-# 🎙️ Trading Order System: An Architectural Deep Dive
+# 🚀 Jobberwocky: Enterprise Job Board Challenge
 
-> **Technical Interview Context**: This project is structured not just as a solution to a challenge, but as a demonstration of high-level architectural decisions, clean code principles, and production-ready enterprise standards.
-
----
-
-## 🏛️ Architectural Vision & Design Decisions
-
-### 1. The Monorepo Choice (pnpm Workspaces)
-**Question: Why a Monorepo for a single-service challenge?**
-**Answer**: Scale and shared context. Using **pnpm workspaces**, we've created a environment where the `apps/api` (Backend) and `apps/web` (Frontend) coexist under a single source of truth.
--   **Strict Type Sharing**: Although currently separate, the architecture is primed to move DTOs and Interfaces into `packages/shared`, ensuring that a change in the backend schema instantly surfaces as a type-check error in the frontend.
--   **Orchestration**: A single `pnpm dev` command manages both development servers, significantly reducing developer friction.
-
-### 2. Backend: NestJS & Scalable Modularity
-**Question: Why NestJS over a simple Express setup?**
-**Answer**: NestJS provides a robust **out-of-the-box infrastructure** based on Angular-like concepts (Modules, Service, Controllers).
--   **Dependency Injection (DI)**: By utilizing Nest's DI container, we ensure that our `TradeOrdersService` is easily mockable for unit testing, adhering to the **Dependency Inversion** principle.
--   **Decorator-Driven Development**: We leverage decorators for everything from API documentation (Swagger) to Request Validation (`class-validator`), which keeps the business logic clean from boilerplate validation code.
-
-### 3. Frontend: Next.js (App Router) & SSR
-**Question: What was the strategy for the Frontend?**
-**Answer**: We chose **Next.js** to leverage its hybrid nature.
--   **Server Components & Actions**: We use Server Actions for data mutations (Create, Delete). This allows us to keep sensitive logic on the server while updating the UI without complex client-side state management (like Redux).
--   **SEO & Speed**: Server-Side Rendering (SSR) ensures that the initial list of trades is delivered to the client as plain HTML, improving Time-to-Interactive.
--   **User Experience (UX)**: We implemented a "Silk" theme using **DaisyUI** and **Glassmorphism** effects to deliver a premium, modern feel that moves beyond basic MVPs.
+> **Technical Interview Context**: This project is a comprehensive solution to the "Jobberwocky" challenge. It demonstrates advanced architectural decisions, clean code (SOLID), and professional enterprise standards, including features far beyond the initial requirements.
 
 ---
 
-## 💎 Core Engineering Principles
+## 🏛️ Architectural Overview
 
-### 🧱 SOLID Application
-1.  **S (Single Responsibility)**:
-    -   `Controllers`: Handle HTTP routing and input mapping.
-    -   `Services`: Contain the pure domain business logic (e.g., price validations).
-    -   `Entities`: Define the data structure and database mapping.
-2.  **O (Open/Closed)**: The validation engine in `TradeOrdersService` is designed to be easily extendable. Adding a new currency pair or a new order type doesn't require rewriting the core logic; you simply extend the constants and validation rules.
-3.  **L (Liskov Substitution)**: We use an abstract `BaseEntity` which all entities inherit from. This guarantees that all entities share common audit fields (`id`, `created_at`, `deleted_at`) consistently.
-4.  **D (Dependency Inversion)**: High-level modules do not depend on low-level database details; they depend on abstractions (Repository pattern provided by TypeORM).
+This project is built as a **Monorepo** using **pnpm workspaces**, ensuring a unified developer experience and shared context.
 
-### 🏷️ Domain-Driven Design (DDD) Lite
-While we didn't go for a full tactical DDD, we applied several concepts:
--   **Rich Service Layer**: The `TradeOrdersService` acts as the guardian of the domain rules, preventing the creation of invalid trade states.
--   **Ubiquitous Language**: Terminology like "Side" (Buy/Sell), "Type" (Limit/Market/Stop), and "Pair" (BTCUSD) is consistent from the database schema up to the UI labels.
+### 1. The Stack
+- **Backend**: NestJS (Node.js framework) for a modular, scalable, and maintainable API.
+- **Frontend**: Next.js (App Router) with SSR for a high-performance, SEO-friendly user interface.
+- **Database**: 
+  - **Main**: MySQL (Standard production setup).
+  - **Portable**: SQLite version (`apps/api-sqlite`) for zero-config demonstrations.
+- **Styling**: Tailwind CSS + DaisyUI for a premium, modern "Silk" aesthetic.
 
 ---
 
-## 🛠️ Feature Spotlight
+## ✅ Challenge Requirements vs. Implementation
 
-### 📉 Complex Validation Engine
-Validated strictly against current market prices:
--   **Limit Orders**: Buy below market, Sell above market.
--   **Stop Orders**: Buy above market, Sell below market.
--   **Market Orders**: Instant execution with no price validation required.
-
-### ♻️ Audit-Compliant Soft Delete
-Instead of hard deleting data, we use TypeORM's `@DeleteDateColumn`. 
--   **Why?**: In financial systems, auditing is critical. We never lose history.
--   **UX Integration**: In the frontend, deleted orders remain visible with an `opacity-50` and a **DELETED** badge, allowing admins to see the full history of activity.
-
-### 📜 Interactive Docs (Swagger)
-Found at `/api/docs`, the Swagger integration provides a Sandbox where developers can:
--   Visualize the entire API surface.
--   See DTO schemas.
--   Perform real requests and see responses in real-time.
+| Requirement | Status | Implementation Detail |
+| :--- | :---: | :--- |
+| **1. Job Posting Service** | ✅ | REST API to register new job opportunities. |
+| **2. Job Searching Service** | ✅ | Internal search endpoint for registered jobs. |
+| **3. External Sources** | ✅ | Consumption and normalization of `jobberwocky-extra-source-v2`. |
+| **4. Job Alerts (Optional)** | ✅ | Email subscription service with keyword filtering. |
+| **No External DB Required** | ✅ | While we use MySQL/SQLite, it's designed for easy setup. |
+| **No Auth Required** | ✅ | **Bonus**: Implemented a full Auth system (see below). |
 
 ---
 
-## 🧪 Quality & Verification
+## 💎 The "Plus" Features (Beyond the Challenge)
 
--   **Unit Testing**: Comprehensive Jest tests for the `TradeOrdersService` ensure that edge cases (invalid amounts, wrong price directions) are caught automatically.
--   **Type Safety**: TypeScript is enforced strictly across both apps to prevent runtime "undefined" errors (as seen in our debug session).
+While the challenge was focused on basic API functionality, I've implemented several enterprise-grade features to demonstrate a production-ready mindset:
+
+### 1. Full Authentication & Roles
+- **JWT Security**: Secure access to protected routes.
+- **Role-Based Access Control (RBAC)**: Different permissions for Admins and Candidates.
+- **Session Persistence**: Persistent login state in the frontend.
+
+### 2. Advanced Job Management
+- **Job Applications**: Candidates can actually apply to jobs, not just see them.
+- **User Profiles**: Detailed profiles for both candidates and recruiters.
+- **Soft Deletes**: Data is never lost; Audit-compliant deletion via TypeORM.
+
+### 3. Professional Frontend (i18n)
+- **Internationalization**: Full support for English and Spanish.
+- **Premium UI**: Glassmorphism effects, micro-animations, and responsive design.
+- **Server Actions**: Modern data mutations using Next.js Server Actions.
+
+### 4. Developer Experience (DX)
+- **Swagger Documentation**: Interactive API testing available at `/api/docs`.
+- **Portable Version**: `apps/api-sqlite` allows running the backend without a MySQL server.
+- **Data Seeding**: Automatic generation of mock data for immediate testing.
 
 ---
 
-## 🚀 Setup Instructions
+## 🛠️ Project Structure
 
-1.  **Prerequisites**: Node.js 20+, pnpm v8+, MySQL.
-2.  **Install**: `pnpm install`
-3.  **Database**: The API automatically creates the database if it doesn't exist based on your `.env` credentials in `apps/api`.
-4.  **Run**: `pnpm dev`
+- `apps/api`: Main NestJS API (MySQL).
+- `apps/api-sqlite`: Portable NestJS API (SQLite).
+- `apps/web`: Next.js frontend.
+- `apps/jobberwocky-extra-source-v2`: The local external source provided by the challenge.
+
+---
+
+## 🚀 Getting Started
+
+1. **Prerequisites**: Node.js 20+, pnpm.
+2. **Install Dependencies**: `pnpm install`
+3. **Environment**: Copy `.env.example` to `.env` in `apps/api` and `apps/web`.
+4. **Run Everything**:
+   ```bash
+   pnpm dev
+   ```
+   *This will start the API, the Frontend, and the Extra Source service simultaneously.*
+
+---
+
+## 📜 API Documentation
+
+Once the server is running, visit:
+- **Main API Docs**: `http://localhost:4000/api/docs`
+- **SQLite API Docs**: `http://localhost:4001/api/docs` (if running)
 
 ---
 

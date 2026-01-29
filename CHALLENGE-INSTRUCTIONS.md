@@ -1,102 +1,54 @@
-# Fullstack Developer Challenge - FX Replay
+# hp-dev-jobberwocky
 
-Follow the instructions carefully and provide your solutions in a clean, organized, and efficient manner. 
-You are expected to share your screen and have this new project running locally. 
-You can use any resource at your disposal.
+You have been asked to implement **Jobberwocky** , a service that works as a store for job opportunities, where companies can share open positions.
 
-### Context: What is a Trading Order?
+## 1. Create a job posting service
 
-A **trading order** is an instruction given by a trader to either **buy** or **sell** a financial asset under specific conditions. Orders can be categorized based on their execution type:
+Implement an application that exposes an API that lets users register new job opportunities.
+- The app does not need to persist info on an external database service.
+- Feel free to store jobs in memory or disk (CSV, SQLite,etc).
+- Choose any API style: web‐based, REST, GraphQL, etc.
 
-- **Market Orders**
-- **Limit Orders**
-- **Stop Orders**
+## 2. Create a job searching service
 
-These orders are commonly used in stock markets, cryptocurrency exchanges, and forex trading. 
-The `trade_order` model represents these orders and their attributes in a database.
+Extend your application to expose another endpoint that lets users find job opportunities from the service you have already created.
 
----
+## 3. Create additional sources
 
-### **Part 1: Build a RESTful API**
+In addition to our internal job service, we want our job-search service to consume data from additional job opportunity sources. To achieve this, we need to consume [jobberwocky-extra-source](https://github.com/avatureta/jobberwocky-extra-source-v2), which, as you may notice, provides data in a rather messy response format. Find the best way to return a response that combines results from multiple sources.
 
-Using **Node.js**, create a RESTful API to manage the `trade_order` resource. The API should follow the following specifications:
+NOTE: You must not make any changes to the jobberwocky-extra-source project. You should only run the service and consume its data from your Jobberwocky application.
 
-1. **Database Model Specifications**:
-    - **Table Name**: `trade_order`
-    - **Columns**:
-        - `id`: A unique, string identifier (UUID).
-        - `side`: A string, possible values are `"buy"` or `"sell"`, required.
-        - `type`: A string, possible values are `"limit"`, `"market"`, `"stop"`, required.
-        - `amount`: A decimal number, maximum of 2 decimal places, required.
-        - `price`: A decimal number, maximum of 5 decimal places, required.
-        - `status`: A string, possible values are `"open"`, `"cancelled"`, `"executed"`. Default value is `"open"`.
-        - `pair`: A string representing the trading pair (e.g., `BTCUSD`), required.
-        - `createdAt`: A timestamp representing when the order was created.
-        - `updatedAt`: A timestamp representing when the order was last updated.
-2. **Endpoints**:
-    - `POST /trade_orders`: Create a new order.
-    - `GET /trade_orders`: Retrieve a list of all orders.
-3. **Local Setup**:
-    - You can choose your preferred stack to build the solution. We do have a slight preference for Express or NestJs (or anything with node).
-4. **Requirements**:
-    - Ensure proper error handling and status codes (e.g., `400` for bad requests, `404` for not found, `500` for server errors).
-    - Write modular and clean code by organizing the project into routes, controllers, and database models.
-  
----
+## 4. Create a Job Alerts service (optional)
 
-### **Part 2: Implement Frontend**
+Update your application so that it lets candidates subscribe to an email address and be notified whenever a new job is posted. An optional search pattern can be provided as a way to filter job posts.
 
-1. Required pages:
-    - /trades: On load, make a GET request to /trade_orders and display current trades
-    - /trades/new: Prompt for the trade parameters and make a POST request to the /trade_orders
-2. **Local Setup**:
-    - You can choose your preferred stack to build the solution. We do have a slight preference for Angular (or any JS framework).
-3. Requirements:
-    - Use any style library (PrimeNG, Bootstrap, Material). Focus on functionality though, UI design choices are secondary.
-  
----
+## FAQ
 
-### **Part 3: Implement Validations for Order Price**
+### Do I need to create a UI?
 
-Suppose the current prices for the trading pairs are as follows:
+We will only assess the backend, but you can buildone if you feel like it.
 
-- **BTCUSD**: `100150.4`
-- **EURUSD**: `1.035`
-- **ETHUSD**: `3310`
-1. **Limit Orders**:
-    - If the order is a **buy** limit order, the price must be **lower than the current market price** of the pair.
-    - If the order is a **sell** limit order, the price must be **higher than the current market price** of the pair.
-2. **Market Orders**:
-    - No price validation is needed, as market orders are executed at the current market price.
-3. **Stop Orders**:
-    - If the order is a **buy** stop order, the price must be **higher than the current market price** of the pair.
-    - If the order is a **sell** stop order, the price must be **lower than the current market price** of the pair.
-4. **Additional Validations**:
-    - Ensure the `amount` is greater than `0`.
-    - Validate that the `pair` exists in the current market prices (`BTCUSD`, `EURUSD`, `ETHUSD`).
-    - Reject orders with an invalid `type` or `side`.
+### Does the app require authentication?
 
----
+No, it doesn't.
 
-### Part 4: Additional bonus tasks
+### What fields should I use for each entity?
 
-1. Implement unit tests in the most useful places.
-2. Implement the following endpoints:
-    - `GET /trade_orders/:id`: Retrieve a single order by its `id`.
-    - `PUT /trade_orders/:id`: Update an existing order.
-    - `DELETE /trade_orders/:id`: Delete an order.
-3. Implement the UI for the new endpoints as you see fit.
-4. Other tasks:
-    - Add pagination to the `GET /trade_orders` endpoint.
-    - Implement soft delete to the `DELETE /trade_orders/:id` endpoint.
-    - Implement Swagger for API documentation.
-  
----
+As a developer, we expect that you design the proper structure for each entity, such as the job or the subscription entities.
 
-### **Evaluation Criteria**
+### Can I use an external framework?
 
-- Adherence to requirements and instructions.
-- Code quality and organization.
-- Correct implementation of validations.
-- Efficient handling of database operations.
-- Error handling and API responses.
+Yes, feel free to choose any framework that suits your needs.
+
+### Which programming language should I use?
+
+You may use: C++, C#, Python, Java/Kotlin, Javascript/Node/Typescript,PHP, Ruby. If you’d prefer to use a different language, please let us know before getting started.
+
+### In which language should I program?
+
+English please.
+
+### Can I resolve the exercise in a fork?
+
+No, we will only assess solutions in the repository created by Avature.

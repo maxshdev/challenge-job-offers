@@ -1,84 +1,89 @@
-# 🎙️ Sistema de Órdenes de Trading: Inmersión Arquitectónica Profunda
+# 🚀 Jobberwocky: Desafío de Bolsa de Empleo Empresarial
 
-> **Contexto de Entrevista Técnica**: Este proyecto está estructurado no solo como una solución a un desafío, sino como una demostración de decisiones arquitectónicas de alto nivel, principios de código limpio (Clean Code) y estándares empresariales listos para producción.
-
----
-
-## 🏛️ Visión Arquitectónica y Decisiones de Diseño
-
-### 1. La Elección del Monorepo (pnpm Workspaces)
-**Pregunta: ¿Por qué usar un Monorepo para un desafío de un solo servicio?**
-**Respuesta**: Por escalabilidad y contexto compartido. Usando **pnpm workspaces**, hemos creado un entorno donde la `apps/api` (Backend) y `apps/web` (Frontend) coexisten bajo una única fuente de verdad.
--   **Compartición Estricta de Tipos**: Aunque actualmente están separados, la arquitectura está preparada para mover DTOs e Interfaces a `packages/shared`, asegurando que un cambio en el esquema del backend se refleje instantáneamente como un error de tipos en el frontend.
--   **Orquestación**: Un solo comando `pnpm dev` gestiona ambos servidores de desarrollo, reduciendo significativamente la fricción para el desarrollador.
-
-### 2. Backend: NestJS y Modularidad Escalable
-**Pregunta: ¿Por qué NestJS en lugar de una configuración simple con Express?**
-**Respuesta**: NestJS proporciona una infraestructura robusta "out-of-the-box" basada en conceptos similares a Angular (Módulos, Servicios, Controladores).
--   **Inyección de Dependencias (DI)**: Al utilizar el contenedor DI de Nest, aseguramos que nuestro `TradeOrdersService` sea fácilmente reemplazable por mocks para pruebas unitarias, cumpliendo con el principio de **Inversión de Dependencias**.
--   **Desarrollo Basado en Decoradores**: Aprovechamos los decoradores para todo, desde la documentación de la API (Swagger) hasta la validación de peticiones (`class-validator`), lo que mantiene la lógica de negocio limpia de código repetitivo de validación.
-
-### 3. Frontend: Next.js (App Router) y SSR
-**Pregunta: ¿Cuál fue la estrategia para el Frontend?**
-**Respuesta**: Elegimos **Next.js** para aprovechar su naturaleza híbrida.
--   **Server Components y Actions**: Utilizamos Server Actions para mutaciones de datos (Crear, Borrar). Esto nos permite mantener la lógica sensible en el servidor mientras actualizamos la interfaz sin necesidad de una gestión de estado compleja en el cliente (como Redux).
--   **SEO y Velocidad**: El Renderizado del Lado del Servidor (SSR) garantiza que la lista inicial de trades se entregue al cliente como HTML puro, mejorando el Tiempo de Interactividad (TTI).
--   **Experiencia de Usuario (UX)**: Implementamos un tema "Silk" usando **DaisyUI** y efectos de **Glassmorphism** para ofrecer una sensación premium y moderna que va más allá de un MVP básico.
+> **Contexto de la Entrevista Técnica**: Este proyecto es una solución integral al desafío "Jobberwocky". Demuestra decisiones arquitectónicas avanzadas, código limpio (SOLID) y estándares empresariales profesionales, incluyendo características que van mucho más allá de los requisitos iniciales.
 
 ---
 
-## 💎 Principios de Ingeniería Fundamentales
+## 🏛️ Descripción General de la Arquitectura
 
-### 🧱 Aplicación de SOLID
-1.  **S (Responsabilidad Única)**:
-    -   `Controllers`: Gestionan el enrutamiento HTTP y el mapeo de entrada.
-    -   `Services`: Contienen la lógica pura de negocio del dominio (ej. validaciones de precios).
-    -   `Entities`: Definen la estructura de datos y el mapeo de la base de datos.
-2.  **O (Abierto/Cerrado)**: El motor de validación en `TradeOrdersService` está diseñado para ser fácilmente extensible. Añadir un nuevo par de divisas o un nuevo tipo de orden no requiere reescribir la lógica central; simplemente se extienden las constantes y las reglas de validación.
-3.  **L (Sustitución de Liskov)**: Utilizamos una clase abstracta `BaseEntity` de la cual heredan todas las entidades. Esto garantiza que todas compartan campos de auditoría comunes (`id`, `created_at`, `deleted_at`) de manera consistente.
-4.  **D (Inversión de Dependencias)**: Los módulos de alto nivel no dependen de detalles de bajo nivel de la base de datos; dependen de abstracciones (patrón Repository proporcionado por TypeORM).
+Este proyecto está construido como un **Monorepo** utilizando **pnpm workspaces**, lo que garantiza una experiencia de desarrollo unificada y un contexto compartido.
 
-### 🏷️ Domain-Driven Design (DDD) Lite
-Aunque no implementamos un DDD táctico completo, aplicamos varios conceptos:
--   **Capa de Servicio Rica**: El `TradeOrdersService` actúa como el guardián de las reglas del dominio, evitando la creación de estados de órdenes inválidos.
--   **Lenguaje Ubicuo**: Terminología como "Side" (Compra/Venta), "Type" (Límite/Mercado/Tope) y "Pair" (BTCUSD) es consistente desde el esquema de la base de datos hasta las etiquetas de la UI.
+### 1. El Stack Tecnológico
+- **Backend**: NestJS (framework de Node.js) para una API modular, escalable y fácil de mantener.
+- **Frontend**: Next.js (App Router) con SSR para una interfaz de usuario de alto rendimiento y amigable con el SEO.
+- **Base de Datos**: 
+  - **Principal**: MySQL (Configuración estándar de producción).
+  - **Portable**: Versión SQLite (`apps/api-sqlite`) para demostraciones sin configuración.
+- **Estilo**: Tailwind CSS + DaisyUI para una estética "Silk" moderna y premium.
 
 ---
 
-## 🛠️ Funcionalidades Destacadas
+## ✅ Requisitos del Desafío vs. Implementación
 
-### 📉 Motor de Validación Complejo
-Validado estrictamente contra precios de mercado en tiempo real:
--   **Órdenes Límite**: Compra por debajo del mercado, Venta por encima del mercado.
--   **Órdenes Stop**: Compra por encima del mercado, Venta por debajo del mercado.
--   **Órdenes de Mercado**: Ejecución instantánea sin necesidad de validación de precio.
-
-### ♻️ Soft Delete (Borrado Lógico) para Auditoría
-En lugar de eliminar físicamente los datos, utilizamos `@DeleteDateColumn` de TypeORM.
--   **¿Por qué?**: En sistemas financieros, la auditoría es crítica. Nunca perdemos el historial.
--   **Integración de UX**: En el frontend, las órdenes borradas permanecen visibles con una `opacity-50` y una etiqueta de **BORRADO**, permitiendo a los administradores ver el historial completo de actividad.
-
-### 📜 Docs Interactivos (Swagger)
-Ubicado en `/api/docs`, la integración de Swagger proporciona un Sandbox donde los desarrolladores pueden:
--   Visualizar toda la superficie de la API.
--   Ver los esquemas de los DTOs.
--   Realizar peticiones reales y ver las respuestas en tiempo real.
+| Requisito | Estado | Detalle de la Implementación |
+| :--- | :---: | :--- |
+| **1. Servicio de Publicación** | ✅ | API REST para registrar nuevas oportunidades laborales. |
+| **2. Servicio de Búsqueda** | ✅ | Endpoint de búsqueda interna para empleos registrados. |
+| **3. Fuentes Externas** | ✅ | Consumo y normalización de `jobberwocky-extra-source-v2`. |
+| **4. Alertas de Empleo (Opcional)** | ✅ | Servicio de suscripción por correo con filtrado por palabras clave. |
+| **Sin DB Externa Obligatoria** | ✅ | Aunque usamos MySQL/SQLite, está diseñado para una configuración sencilla. |
+| **Sin Auth Obligatoria** | ✅ | **Plus**: Se implementó un sistema de Autenticación completo (ver abajo). |
 
 ---
 
-## 🧪 Calidad y Verificación
+## 💎 Características "Plus" (Más allá del Desafío)
 
--   **Pruebas Unitarias**: Pruebas exhaustivas con Jest para el `TradeOrdersService` aseguran que los casos de borde (montos inválidos, direcciones de precio incorrectas) se detecten automáticamente.
--   **Seguridad de Tipos**: Se aplica TypeScript estrictamente en ambas aplicaciones para prevenir errores de "undefined" en tiempo de ejecución.
+Aunque el desafío se centraba en funcionalidades básicas de API, he implementado varias características de nivel empresarial para demostrar una mentalidad preparada para producción:
+
+### 1. Autenticación Completa y Roles
+- **Seguridad JWT**: Acceso seguro a rutas protegidas.
+- **Control de Acceso Basado en Roles (RBAC)**: Diferentes permisos para Administradores y Candidatos.
+- **Persistencia de Sesión**: Estado de inicio de sesión persistente en el frontend.
+
+### 2. Gestión Avanzada de Empleos
+- **Aplicaciones a Empleos**: Los candidatos pueden aplicar a los empleos, no solo verlos.
+- **Perfiles de Usuario**: Perfiles detallados tanto para candidatos como para reclutadores.
+- **Eliminación Lógica (Soft Deletes)**: Los datos nunca se pierden; eliminación compatible con auditoría mediante TypeORM.
+
+### 3. Frontend Profesional (i18n)
+- **Internacionalización**: Soporte completo para Inglés y Español.
+- **UI Premium**: Efectos de glassmorphism, micro-animaciones y diseño responsivo.
+- **Server Actions**: Mutaciones de datos modernas utilizando Next.js Server Actions.
+
+### 4. Experiencia del Desarrollador (DX)
+- **Documentación Swagger**: Pruebas de API interactivas disponibles en `/api/docs`.
+- **Versión Portable**: `apps/api-sqlite` permite ejecutar el backend sin un servidor MySQL.
+- **Seeds de Datos**: Generación automática de datos de prueba para testeo inmediato.
 
 ---
 
-## 🚀 Instrucciones de Configuración
+## 🛠️ Estructura del Proyecto
 
-1.  **Requisitos**: Node.js 20+, pnpm v8+, MySQL.
-2.  **Instalación**: `pnpm install`
-3.  **Base de Datos**: La API crea automáticamente la base de datos si no existe, basándose en las credenciales de tu `.env` en `apps/api`.
-4.  **Ejecución**: `pnpm dev`
+- `apps/api`: API principal de NestJS (MySQL).
+- `apps/api-sqlite`: API portable de NestJS (SQLite).
+- `apps/web`: Frontend de Next.js.
+- `apps/jobberwocky-extra-source-v2`: La fuente externa local proporcionada por el desafío.
+
+---
+
+## 🚀 Cómo Empezar
+
+1. **Prerrequisitos**: Node.js 20+, pnpm.
+2. **Instalar Dependencias**: `pnpm install`
+3. **Entorno**: Copia `.env.example` a `.env` en `apps/api` y `apps/web`.
+4. **Ejecutar Todo**:
+   ```bash
+   pnpm dev
+   ```
+   *Esto iniciará la API, el Frontend y el servicio de la Fuente Extra simultáneamente.*
+
+---
+
+## 📜 Documentación de la API
+
+Una vez que el servidor esté funcionando, visita:
+- **Docs API Principal**: `http://localhost:4000/api/docs`
+- **Docs API SQLite**: `http://localhost:4001/api/docs` (si está en ejecución)
 
 ---
 

@@ -1,103 +1,54 @@
-# Desafío Fullstack Developer - FX Replay
+# hp-dev-jobberwocky
 
-Sigue las instrucciones cuidadosamente y proporciona tus soluciones de manera limpia, organizada y eficiente.
-Se espera que compartas tu pantalla y tengas este nuevo proyecto funcionando localmente.
-Puedes usar cualquier recurso a tu disposición.
+Se te ha pedido implementar **Jobberwocky**, un servicio que funciona como un almacén de oportunidades laborales, donde las empresas pueden compartir vacantes.
 
-### Contexto: ¿Qué es una Orden de Trading?
+## 1. Crear un servicio de publicación de empleos
 
-Una **orden de trading** es una instrucción dada por un trader para **comprar** o **vender** un activo financiero bajo condiciones específicas. Las órdenes se pueden categorizar según su tipo de ejecución:
+Implementa una aplicación que exponga una API que permita a los usuarios registrar nuevas oportunidades laborales.
+- La aplicación no necesita persistir información en un servicio de base de datos externo.
+- Siéntete libre de almacenar los empleos en memoria o en disco (CSV, SQLite, etc.).
+- Elige cualquier estilo de API: basada en web, REST, GraphQL, etc.
 
-- **Órdenes de Mercado (Market Orders)**
-- **Órdenes Límite (Limit Orders)**
-- **Órdenes de Tope (Stop Orders)**
+## 2. Crear un servicio de búsqueda de empleos
 
-Estas órdenes son comúnmente utilizadas en mercados de valores, intercambios de criptomonedas y trading de forex.
-El modelo `trade_order` representa estas órdenes y sus atributos en una base de datos.
+Extiende tu aplicación para exponer otro endpoint que permita a los usuarios encontrar oportunidades laborales desde el servicio que ya has creado.
 
----
+## 3. Crear fuentes adicionales
 
-### **Parte 1: Construir una API RESTful**
+Además de nuestro servicio interno de empleos, queremos que nuestro servicio de búsqueda de empleos consuma datos de fuentes adicionales de oportunidades laborales. Para lograr esto, necesitamos consumir [jobberwocky-extra-source](https://github.com/avatureta/jobberwocky-extra-source-v2), que, como habrás notado, proporciona datos en un formato de respuesta bastante desordenado. Encuentra la mejor manera de devolver una respuesta que combine resultados de múltiples fuentes.
 
-Usando **Node.js**, crea una API RESTful para gestionar el recurso `trade_order`. La API debe seguir las siguientes especificaciones:
+NOTA: No debes realizar ningún cambio en el proyecto jobberwocky-extra-source. Solo debes ejecutar el servicio y consumir sus datos desde tu aplicación Jobberwocky.
 
-1. **Especificaciones del Modelo de Base de Datos**:
-    - **Nombre de la Tabla**: `trade_order`
-    - **Columnas**:
-        - `id`: Un identificador único de tipo string (UUID).
-        - `side`: Un string, los valores posibles son `"buy"` (compra) o `"sell"` (venta), requerido.
-        - `type`: Un string, los valores posibles son `"limit"`, `"market"`, `"stop"`, requerido.
-        - `amount`: Un número decimal, máximo 2 decimales, requerido.
-        - `price`: Un número decimal, máximo 5 decimales, requerido.
-        - `status`: Un string, los valores posibles son `"open"`, `"cancelled"`, `"executed"`. El valor por defecto es `"open"`.
-        - `pair`: Un string que representa el par de trading (ej., `BTCUSD`), requerido.
-        - `createdAt`: Una marca de tiempo (timestamp) que representa cuándo se creó la orden.
-        - `updatedAt`: Una marca de tiempo que representa cuándo se actualizó la orden por última vez.
-2. **Endpoints**:
-    - `POST /trade_orders`: Crear una nueva orden.
-    - `GET /trade_orders`: Obtener una lista de todas las órdenes.
-3. **Configuración Local**:
-    - Puedes elegir tu stack preferido para construir la solución. Tenemos una ligera preferencia por Express o NestJs (o cualquier cosa con Node).
-4. **Requisitos**:
-    - Asegura un manejo adecuado de errores y códigos de estado (ej., `400` para solicitudes incorrectas, `404` para no encontrado, `500` para errores del servidor).
-    - Escribe código modular y limpio organizando el proyecto en rutas, controladores y modelos de base de datos.
+## 4. Crear un servicio de Alertas de Empleo (opcional)
 
----
+Actualiza tu aplicación para que permita a los candidatos suscribirse a una dirección de correo electrónico y ser notificados cada vez que se publique un nuevo empleo. Se puede proporcionar un patrón de búsqueda opcional como forma de filtrar las publicaciones de empleos.
 
-### **Parte 2: Implementar el Frontend**
+## Preguntas frecuentes (FAQ)
 
-1. Páginas requeridas:
-    - `/trades`: Al cargar, realiza una solicitud GET a `/trade_orders` y muestra las operaciones actuales.
-    - `/trades/new`: Solicita los parámetros de la operación y realiza una solicitud POST a `/trade_orders`.
-2. **Configuración Local**:
-    - Puedes elegir tu stack preferido para construir la solución. Tenemos una ligera preferencia por Angular (o cualquier framework de JS).
-3. Requisitos:
-    - Usa cualquier librería de estilos (PrimeNG, Bootstrap, Material). Sin embargo, enfócate en la funcionalidad; las elecciones de diseño de la interfaz de usuario son secundarias.
+### ¿Necesito crear una interfaz de usuario (UI)?
 
----
+Solo evaluaremos el backend, pero puedes construir una si te apetece.
 
-### **Parte 3: Implementar Validaciones para el Precio de la Orden**
+### ¿La aplicación requiere autenticación?
 
-Supongamos que los precios actuales para los pares de trading son los siguientes:
+No, no la requiere.
 
-- **BTCUSD**: `100150.4`
-- **EURUSD**: `1.035`
-- **ETHUSD**: `3310`
+### ¿Qué campos debo usar para cada entidad?
 
-1. **Órdenes Límite (Limit Orders)**:
-    - Si la orden es una orden límite de **compra**, el precio debe ser **menor que el precio de mercado actual** del par.
-    - Si la orden es una orden límite de **venta**, el precio debe ser **mayor que el precio de mercado actual** del par.
-2. **Órdenes de Mercado (Market Orders)**:
-    - No se necesita validación de precio, ya que las órdenes de mercado se ejecutan al precio de mercado actual.
-3. **Órdenes de Tope (Stop Orders)**:
-    - Si la orden es una orden stop de **compra**, el precio debe ser **mayor que el precio de mercado actual** del par.
-    - Si la orden es una orden stop de **venta**, el precio debe ser **menor que el precio de mercado actual** del par.
-4. **Validaciones Adicionales**:
-    - Asegura que el `amount` (monto) sea mayor que `0`.
-    - Valida que el `pair` (par) exista en los precios de mercado actuales (`BTCUSD`, `EURUSD`, `ETHUSD`).
-    - Rechaza órdenes con un `type` (tipo) o `side` (lado) inválido.
+Como desarrollador/a, esperamos que diseñes la estructura adecuada para cada entidad, como las entidades de trabajo (job) o de suscripción (subscription).
 
----
+### ¿Puedo usar un framework externo?
 
-### Parte 4: Tareas adicionales de bonificación
+Sí, siéntete libre de elegir cualquier framework que se adapte a tus necesidades.
 
-1. Implementa pruebas unitarias en los lugares más útiles.
-2. Implementa los siguientes endpoints:
-    - `GET /trade_orders/:id`: Obtener una sola orden por su `id`.
-    - `PUT /trade_orders/:id`: Actualizar una orden existente.
-    - `DELETE /trade_orders/:id`: Elminar una orden.
-3. Implementa la UI para los nuevos endpoints según creas conveniente.
-4. Otras tareas:
-    - Agrega paginación al endpoint `GET /trade_orders`.
-    - Implementa borrado lógico (soft delete) en el endpoint `DELETE /trade_orders/:id`.
-    - Implementa Swagger para la documentación de la API.
+### ¿Qué lenguaje de programación debo usar?
 
----
+Puedes usar: C++, C#, Python, Java/Kotlin, Javascript/Node/Typescript, PHP, Ruby. Si prefieres usar un lenguaje diferente, por favor háznoslo saber antes de comenzar.
 
-### **Criterios de Evaluación**
+### ¿En qué lenguaje debo programar?
 
-- Cumplimiento de los requisitos e instrucciones.
-- Calidad y organización del código.
-- Implementación correcta de las validaciones.
-- Manejo eficiente de las operaciones de base de datos.
-- Manejo de errores y respuestas de la API.
+En inglés, por favor.
+
+### ¿Puedo resolver el ejercicio en un fork?
+
+No, solo evaluaremos soluciones en el repositorio creado por Avature.
